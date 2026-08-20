@@ -1,0 +1,279 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fbf6ed;
+  --surface: #ffffff;
+  --surface-muted: #f6efe1;
+  --foreground: #0f1f1a;
+  --muted: #6b7563;
+  --border: #ece3d2;
+
+  --brand: #0d4029;
+  --brand-strong: #082c1c;
+  --brand-soft: #e8f0eb;
+
+  --success: #166534;
+  --success-soft: #dcfce7;
+  --warning: #92590a;
+  --warning-soft: #fdecc8;
+  --danger: #b42318;
+  --danger-soft: #fee4e2;
+
+  /* Status unit di kanvas denah. Tiga hue yang jelas berbeda, penuh — bukan
+     pastel — supaya warna di legenda persis sama dengan warna di kanvas. */
+  --unit-occupied: #6d4aff;
+  --unit-available: #16a34a;
+  --unit-activation: #db2777;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
+
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+
+  --color-unit-occupied: var(--unit-occupied);
+  --color-unit-available: var(--unit-available);
+  --color-unit-activation: var(--unit-activation);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* MAPS — penanda Mapbox dibuat sebagai DOM imperatif (bukan JSX), jadi
+   kelasnya hidup di sini. Warna satu-satunya hal yang diset dari JS, lewat
+   --pin-color, supaya sumber warnanya tetap _lib/occupancy.ts. */
+.maps-pin {
+  --pin-color: var(--muted);
+  cursor: pointer;
+  transform-origin: bottom center;
+  transition: transform 150ms ease, opacity 150ms ease;
+  will-change: transform;
+}
+.maps-pin__body {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 32px;
+  padding: 0 11px 0 8px;
+  border: 2px solid var(--surface);
+  border-radius: 999px;
+  background: var(--pin-color);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgb(15 31 26 / 0.3);
+}
+.maps-pin__tail {
+  width: 9px;
+  height: 9px;
+  margin: -6px auto 0;
+  border-right: 2px solid var(--surface);
+  border-bottom: 2px solid var(--surface);
+  border-bottom-right-radius: 2px;
+  background: var(--pin-color);
+  transform: rotate(45deg);
+}
+.maps-pin__icon {
+  width: 15px;
+  height: 15px;
+  opacity: 0.92;
+}
+.maps-pin.is-hovered,
+.maps-pin.is-selected {
+  transform: scale(1.22);
+  z-index: 3;
+}
+.maps-pin.is-selected .maps-pin__body {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+.maps-pin.is-dimmed {
+  opacity: 0.25;
+}
+
+.maps-cluster {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 46px;
+  height: 46px;
+  padding: 0 10px;
+  border: 2px solid var(--surface);
+  border-radius: 999px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.1;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgb(15 31 26 / 0.32);
+}
+.maps-cluster span {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+/* Pin sementara saat mode edit. Sengaja beda bentuk dan warna dari pin status:
+   ini posisi yang belum tersimpan, bukan data. */
+.maps-draft-pin {
+  width: 18px;
+  height: 18px;
+  border: 3px solid var(--surface);
+  border-radius: 999px 999px 999px 2px;
+  background: var(--brand);
+  box-shadow: 0 3px 8px rgb(15 31 26 / 0.4);
+  transform: rotate(-45deg);
+  cursor: grab;
+}
+.maps-draft-pin:active {
+  cursor: grabbing;
+}
+
+.maps-popup-shell .mapboxgl-popup-content {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--foreground);
+  box-shadow: 0 10px 28px rgb(15 31 26 / 0.18);
+}
+.maps-popup-shell .mapboxgl-popup-tip {
+  border-top-color: var(--surface);
+  border-bottom-color: var(--surface);
+}
+.maps-popup-shell .mapboxgl-popup-close-button {
+  padding: 2px 8px;
+  color: var(--muted);
+  font-size: 18px;
+}
+.maps-popup h3 {
+  font-size: 14px;
+  font-weight: 600;
+  padding-right: 14px;
+}
+.maps-popup__sub {
+  margin-top: 1px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.maps-popup dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 12px;
+  margin-top: 10px;
+  font-size: 12px;
+}
+.maps-popup dt {
+  color: var(--muted);
+}
+.maps-popup dd {
+  text-align: right;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.maps-popup__action {
+  width: 100%;
+  margin-top: 12px;
+  padding: 7px 12px;
+  border-radius: 10px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.maps-popup__action:hover {
+  background: var(--brand-strong);
+}
+.maps-popup__action--ghost {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--foreground);
+}
+.maps-popup__action--ghost:hover {
+  background: var(--surface-muted);
+}
+.maps-popup__action + .maps-popup__action {
+  margin-top: 6px;
+}
+
+.mapboxgl-ctrl-logo,
+.mapboxgl-ctrl-attrib {
+  opacity: 0.55;
+}
+
+.react-datepicker__header {
+  background: transparent !important;
+  border-bottom: 1px solid var(--border) !important;
+  padding-top: 12px !important;
+}
+.react-datepicker__current-month {
+  display: none !important;
+}
+.react-datepicker__day {
+  color: var(--foreground);
+}
+.react-datepicker__day:hover {
+  background-color: var(--surface-muted) !important;
+}
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__day--in-range {
+  background-color: var(--brand) !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+}
+.react-datepicker__day--selected:hover {
+  background-color: var(--brand) !important;
+}
+.react-datepicker__day--today {
+  font-weight: 600 !important;
+}
+.react-datepicker__day-name {
+  color: var(--muted) !important;
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  font-weight: 600 !important;
+}
+.react-datepicker__day--disabled {
+  color: var(--border) !important;
+  cursor: not-allowed !important;
+}
+.react-datepicker__day--disabled:hover {
+  background: transparent !important;
+}
+.react-datepicker__navigation {
+  display: none !important;
+}
+.react-datepicker__month-container {
+  background: transparent !important;
+}
+.react-datepicker__triangle {
+  display: none !important;
+}
